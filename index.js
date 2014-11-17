@@ -1,6 +1,7 @@
 var htmlparser = require('htmlparser2');
 var Core = require('./lib/core');
 var State = require('./lib/state');
+var _ = require('lodash');
 
 var parxer = function(config, input, next) {
 
@@ -11,7 +12,7 @@ var parxer = function(config, input, next) {
 
     var parser = new htmlparser.Parser({
         onopentag: function(tagname, attribs) {
-            var matched = Core.matchPlugin(config.plugins, tagname, attribs, config, state);
+            var matched = !_.isEmpty(attribs) && Core.matchPlugin(config.plugins, tagname, attribs, config, state);
             if(!matched) {
                 state.setCurrentOutput(Core.createTag(tagname, attribs));
             }

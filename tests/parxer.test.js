@@ -75,6 +75,23 @@ describe("Simple parsing", function() {
       });
   });
 
+  it('should allow you to define your own prefix', function(done) {
+      var input = "<html><div id='url' data-my-url='{{server:name}}'></div></html>";
+      parxer({
+        prefix: 'data-my-',
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['data-my-url']) })
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#url').text()).to.be('http://www.google.com');
+        done();
+      });
+  });
+
 });
 
 
