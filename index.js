@@ -41,7 +41,7 @@ var parxer = function(config, input, next) {
         onend: function() {
              state.waitFor(config, true, function(err) {
                 if(err) { return next(err); }
-                Core.processDeferredStack(config, state, function(err) {
+                Core.processDeferredStack(config, state, function() {
                     state.waitFor(config, false, next);
                 });
              });

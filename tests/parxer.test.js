@@ -5,7 +5,7 @@ var parxer = require('..').parxer;
 var render = require('..').render;
 var cheerio = require('cheerio');
 
-describe("Simple parsing", function() {
+describe("Core html parsing", function() {
 
   it('should parse a valid html document unchanged', function(done) {
       var input = "<html></html>";
@@ -122,9 +122,9 @@ describe("Simple parsing", function() {
   it('should deal with managing overall timeout', function(done) {
       var input = "<html><div id='url' cx-url='{{server:name}}'></div></html>";
       parxer({
-        timeout: 100,
+        timeout: 20,
         plugins: [
-          require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next(null, fragment.attribs['cx-url']) }, 1000); })
+          require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next(null, fragment.attribs['cx-url']) }, 40); })
         ],
         variables: {
           'server:name':'http://www.google.com'
