@@ -130,7 +130,8 @@ describe("Core html parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, data) {
-        expect(err).to.contain('Timeout exceeded, failed to respond');
+        expect(err.statusCode).to.be(500);
+        expect(err.content).to.contain('Timeout exceeded, failed to respond');
         done();
       });
   });
