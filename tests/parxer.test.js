@@ -75,7 +75,7 @@ describe("Core html parsing", function() {
   });
 
   it('should parse bundle attributes', function(done) {
-      var input = "<html><div id='bundle' cx-bundles='top.js'></div></html>";
+      var input = "<html><div id='bundle' cx-bundles='service-name/top.js'></div></html>";
       parxer({
         plugins: [
           require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
@@ -85,11 +85,12 @@ describe("Core html parsing", function() {
         },
         environment: 'test',
         variables: {
+          'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, data) {
         var $ = cheerio.load(data);
-        expect($('#bundle').text()).to.be('http://base.url.com/test/default/html/top.js.html');
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top.js.html');
         done();
       });
   });
@@ -171,7 +172,7 @@ describe("Core html parsing", function() {
   });
 
    it('should replace outer when specified with bundle', function(done) {
-      var input = "<html><div id='bundle'><div cx-replace-outer='true' cx-bundles='top.js'></div></div></html>";
+      var input = "<html><div id='bundle'><div cx-replace-outer='true' cx-bundles='service-name/top.js'></div></div></html>";
       parxer({
         plugins: [
           require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
@@ -185,7 +186,7 @@ describe("Core html parsing", function() {
         }
       }, input, function(err, data) {
         var $ = cheerio.load(data);
-        expect($('#bundle').text()).to.be('http://base.url.com/test/default/html/top.js.html');
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/default/html/top.js.html');
         done();
       });
   });
