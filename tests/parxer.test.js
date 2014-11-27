@@ -186,7 +186,7 @@ describe("Core html parsing", function() {
         }
       }, input, function(err, data) {
         var $ = cheerio.load(data);
-        expect($('#bundle').text()).to.be('http://base.url.com/service-name/local/html/top.js.html');
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/YOU_SPECIFIED_A_BUNDLE_THAT_ISNT_AVAILABLE_TO_THIS_PAGE/html/top.js.html');
         done();
       });
   });
