@@ -55,6 +55,22 @@ describe("Core html parsing", function() {
       });
   });
 
+  it('should parse url attributes and replace complex default html as well as text', function(done) {
+      var input = "<html><div id='url' cx-url='{{server:name}}'><!-- comment --><h1>I am some default text</h1><span>Hello</span></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']) })
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#url').text()).to.be('http://www.google.com');
+        done();
+      });
+  });
+
   it('should parse a mixture of attributes in a bigger document', function(done) {
       var input = "<html><div id='test' cx-test='{{environment:name}}'></div><div id='url' cx-url='{{server:name}}'>I am some default text</div></html>";
       parxer({
@@ -205,6 +221,44 @@ describe("Core html parsing", function() {
       }, input, function(err, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('Default Content');
+        done();
+      });
+  });
+
+  it('should deal with a service that returns an error but show default html if configured to', function(done) {
+      var input = "<html><div id='url' cx-url='{{server:name}}'><h1>HTML</h1><div>Hello</div></div></html>";
+      parxer({
+        timeout: 100,
+        showErrors: false,
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next('Arrghh'); }, 20)} )
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#url h1').text()).to.be('HTML');
+        expect($('#url div').text()).to.be('Hello');
+        done();
+      });
+  });
+
+  it('should deal with a service that returns an error but show default html if configured to and replace outer', function(done) {
+      var input = "<html><div id='wrapper'><div id='url' cx-replace-outer='true' cx-url='{{server:name}}'><h1>HTML</h1><div>Hello</div></div></div></html>";
+      parxer({
+        timeout: 100,
+        showErrors: false,
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next('Arrghh'); }, 20)} )
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#wrapper h1').text()).to.be('HTML');
+        expect($('#wrapper div').text()).to.be('Hello');
         done();
       });
   });
