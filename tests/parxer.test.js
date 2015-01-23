@@ -263,6 +263,25 @@ describe("Core html parsing", function() {
       });
   });
 
+  it('should deal with a service that returns an error but show default html if configured to and survive malformed html', function(done) {
+      var input = "<html><div id='wrapper'><div id='url' cx-replace-outer='true' cx-url='{{server:name}}'><h1>HTML</h1><div>Hello</div></div></html>";
+      parxer({
+        timeout: 100,
+        showErrors: false,
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next('Arrghh'); }, 20)} )
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#wrapper h1').text()).to.be('HTML');
+        expect($('#wrapper div').text()).to.be('Hello');
+        done();
+      });
+  });
+
 
 });
 
