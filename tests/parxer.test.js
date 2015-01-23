@@ -264,7 +264,7 @@ describe("Core html parsing", function() {
   });
 
   it('should deal with a service that returns an error but show default html if configured to and survive malformed html', function(done) {
-      var input = "<html><div id='wrapper'><div id='url' cx-replace-outer='true' cx-url='{{server:name}}'><h1>HTML</h1><div>Hello</div></div></html>";
+      var input = "<html><div id='wrapper'><div id='url' cx-replace-outer='true' cx-url='{{server:name}}'><h1>HTML<div>Hello</div></div></html>";
       parxer({
         timeout: 100,
         showErrors: false,
@@ -276,8 +276,7 @@ describe("Core html parsing", function() {
         }
       }, input, function(err, data) {
         var $ = cheerio.load(data);
-        expect($('#wrapper h1').text()).to.be('HTML');
-        expect($('#wrapper div').text()).to.be('Hello');
+        expect($('#wrapper h1').text()).to.be('HTMLHello');
         done();
       });
   });
