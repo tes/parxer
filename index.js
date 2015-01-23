@@ -12,56 +12,38 @@ var parxer = function(config, input, next) {
 
     var parser = new htmlparser.Parser({
         onopentag: function(tagname, attribs) {
-            if(state.isNextTextDefault()) {
+            if(state.isInsideFragment()) {
                 state.incrementTagCounter();
-                state.setDefaultOutput(Core.createTag(tagname, attribs));
+                state.setOutput(Core.createTag(tagname, attribs));
             } else {
                 var matched = !_.isEmpty(attribs) && Core.matchPlugin(config.plugins, tagname, attribs, config, state);
                 if(!matched) {
-                    state.setCurrentOutput(Core.createTag(tagname, attribs));
+                    state.setOutput(Core.createTag(tagname, attribs));
                 }
             }
         },
         onprocessinginstruction: function(name, data) {
-            if(state.isNextTextDefault()) {
-                state.setDefaultOutput('<' + data + '>');
-            } else {
-                state.setCurrentOutput('<' + data + '>');
-            }
+            state.setOutput('<' + data + '>');
         },
         ontext:function(data) {
-            if(state.isNextTextDefault()) {
-                state.setDefaultOutput(data);
-            } else {
-                state.setCurrentOutput(data);
-            }
+            state.setOutput(data);
         },
         oncomment: function(data) {
-            if(state.isNextTextDefault()) {
-                state.setDefaultOutput('<!--' + data);
-            } else {
-                state.setCurrentOutput('<!--' + data);
-            }
+            state.setOutput('<!--' + data);
         },
         oncommentend: function() {
-            if(state.isNextTextDefault()) {
-                state.setDefaultOutput('-->');
-            } else {
-                state.setCurrentOutput('-->');
-            }
+            state.setOutput('-->');
         },
         onclosetag: function(tagname){
             if(state.isMatchedClosingTag()) {
-                if(state.isNextTextDefault()) { state.setNextTextDefault(false); }
+                if(state.isInsideFragment()) { state.setInsideFragment(false); }
                 if(state.isSkipClosingTag()) { return state.setSkipClosingTag(false); }
-                state.setCurrentOutput('</' + tagname + '>');
+                state.setOutput('</' + tagname + '>');
             } else {
-                if(state.isNextTextDefault()) {
+                if(state.isInsideFragment()) {
                     state.decrementTagCounter();
-                    state.setDefaultOutput('</' + tagname + '>');
-                } else {
-                    state.setCurrentOutput('</' + tagname + '>');
                 }
+                state.setOutput('</' + tagname + '>');
             }
         },
         onend: function() {
