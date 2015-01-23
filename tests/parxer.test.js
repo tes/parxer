@@ -188,7 +188,7 @@ describe("Core html parsing", function() {
   });
 
    it('should replace outer when specified with bundle', function(done) {
-      var input = "<html><div id='bundle'><div cx-replace-outer='true' cx-bundles='service-name/top.js'></div></div></html>";
+      var input = "<html><div id='bundle'><div cx-replace-outer='true' cx-bundles='service-name/top.js'><script id='default'>This is some default script</script></div></div></html>";
       parxer({
         plugins: [
           require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
@@ -203,6 +203,7 @@ describe("Core html parsing", function() {
       }, input, function(err, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/YOU_SPECIFIED_A_BUNDLE_THAT_ISNT_AVAILABLE_TO_THIS_PAGE/html/top.js.html');
+        expect($('#default').length).to.be(0);
         done();
       });
   });
