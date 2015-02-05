@@ -4,6 +4,7 @@ var expect = require('expect.js');
 var parxer = require('..').parxer;
 var render = require('..').render;
 var cheerio = require('cheerio');
+var fs = require('fs');
 
 describe("Core html parsing", function() {
 
@@ -51,6 +52,22 @@ describe("Core html parsing", function() {
       }, input, function(err, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
+        done();
+      });
+  });
+
+  it('should leave br tags alone', function(done) {
+      var input = '<br/>';
+      parxer({}, input, function(err, data) {
+        expect(data).to.be('<br/>');
+        done();
+      });
+  });
+
+  it('should close void tags to be consistent', function(done) {
+      var input = '<br><meta title="hello">';
+      parxer({}, input, function(err, data) {
+        expect(data).to.be('<br/><meta title="hello"/>');
         done();
       });
   });
@@ -112,7 +129,7 @@ describe("Core html parsing", function() {
   });
 
   it('should deal with all the usual html features', function(done) {
-      var input = "<!DOCTYPE html><html><!-- hello --><div class='class'>I am some text</div></html>";
+      var input = '<!DOCTYPE html><html><!-- hello --><div class="class">I am some text</div></html>';
       parxer({}, input, function(err, data) {
         expect(data).to.be(input);
         done();

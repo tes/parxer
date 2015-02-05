@@ -1,6 +1,7 @@
 var htmlparser = require('htmlparser2');
 var Core = require('./lib/core');
 var State = require('./lib/state');
+var voidElements = require('./lib/void');
 var _ = require('lodash');
 
 var parxer = function(config, input, next) {
@@ -12,13 +13,18 @@ var parxer = function(config, input, next) {
 
     var parser = new htmlparser.Parser({
         onopentag: function(tagname, attribs) {
+            var selfClosing = false;
+            if(voidElements[tagname]) {
+                selfClosing = true;
+                state.setSkipClosingTag(true);
+            }
             if(state.isInsideFragment()) {
                 state.incrementTagCounter();
                 state.setOutput(Core.createTag(tagname, attribs));
             } else {
                 var matched = !_.isEmpty(attribs) && Core.matchPlugin(config.plugins, tagname, attribs, config, state);
                 if(!matched) {
-                    state.setOutput(Core.createTag(tagname, attribs));
+                    state.setOutput(Core.createTag(tagname, attribs, selfClosing));
                 }
             }
         },
