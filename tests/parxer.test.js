@@ -128,6 +128,50 @@ describe("Core html parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and use direct js urls if in minfied mode', function(done) {
+      var input = "<html><div id='bundle' cx-replace-outer='true' cx-bundles='service-name/top.js'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: true,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
+        done();
+      });
+  });
+
+  it('should parse bundle attributes and use direct css urls if in minfied mode', function(done) {
+      var input = "<html><div id='bundle' cx-replace-outer='true' cx-bundles='service-name/top.css'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: true,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('html link')[0].attribs.href).to.be('http://base.url.com/service-name/50/css/top.css');
+        done();
+      });
+  });
+
   it('should deal with all the usual html features', function(done) {
       var input = '<!DOCTYPE html><html><!-- hello --><div class="class">I am some text</div></html>';
       parxer({}, input, function(err, data) {
