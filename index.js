@@ -13,44 +13,75 @@ var parxer = function(config, input, next) {
 
     var parser = new htmlparser.Parser({
         onopentag: function(tagname, attribs) {
+
+            state.incrementTagCounter();
+
             var selfClosing = false;
+
             if(voidElements[tagname]) {
                 selfClosing = true;
-                state.setSkipClosingTag(true);
+                state.setSkipClosingTag(tagname);
             }
+
+            if(state.isSkipBlock()) {
+                state.setSkipClosingTag(tagname);
+                return;
+            }
+
             if(state.isInsideFragment()) {
-                state.incrementTagCounter();
-                state.setOutput(Core.createTag(tagname, attribs));
-            } else {
-                var matched = !_.isEmpty(attribs) && Core.matchPlugin(config.plugins, tagname, attribs, config, state);
-                if(!matched) {
-                    state.setOutput(Core.createTag(tagname, attribs, selfClosing));
-                }
+                state.setOutput(Core.createTag(tagname, attribs, selfClosing));
+                return;
             }
+
+            var matched = !_.isEmpty(attribs) && Core.matchPlugin(config.plugins, tagname, attribs, config, state);
+            if(!matched) {
+                state.setOutput(Core.createTag(tagname, attribs, selfClosing));
+            }
+
         },
         onprocessinginstruction: function(name, data) {
+            if(state.isSkipBlock()) { return; }
             state.setOutput('<' + data + '>');
         },
         ontext:function(data) {
+            if(state.isSkipBlock()) { return; }
             state.setOutput(data);
         },
         oncomment: function(data) {
+            if(state.isSkipBlock()) { return; }
             state.setOutput('<!--' + data);
         },
         oncommentend: function() {
+            if(state.isSkipBlock()) { return; }
             state.setOutput('-->');
         },
-        onclosetag: function(tagname){
-            if(state.isMatchedClosingTag()) {
-                if(state.isInsideFragment()) { state.setInsideFragment(false); }
-                if(state.isSkipClosingTag()) { return state.setSkipClosingTag(false); }
-                state.setOutput('</' + tagname + '>');
-            } else {
-                if(state.isInsideFragment()) {
-                    state.decrementTagCounter();
-                }
+        onclosetag: function(tagname) {
+
+            var writeEndTag = true;
+
+            if(state.isSkipClosingTag(tagname)) {
+                state.clearSkipClosingTag(tagname);
+                writeEndTag = false;
+            }
+
+            if(state.isFragmentCloseTag(tagname)) {
+                state.clearInsideFragment(tagname);
+            }
+
+            if(state.isIfBlockCloseTag(tagname)) {
+                state.clearInsideIfBlock(tagname);
+            }
+
+            if(state.isSkipBlockCloseTag(tagname)) {
+                state.clearSkipBlock(tagname);
+            }
+
+            state.decrementTagCounter();
+
+            if(writeEndTag) {
                 state.setOutput('</' + tagname + '>');
             }
+
         },
         onend: function() {
              state.waitFor(config, true, function(err) {

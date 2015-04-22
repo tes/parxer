@@ -38,5 +38,11 @@
   "pre-commit": [
     "lint",
     "test"
-  ]
+  ],
+  "semistandard": {
+    "ignore": [
+      "**/hogan.js/**",
+      "**/tests/**"
+    ]
+  }
 }
