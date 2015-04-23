@@ -23,12 +23,12 @@ var parxer = function(config, input, next) {
                 state.setSkipClosingTag(tagname);
             }
 
-            if(state.isSkipBlock()) {
+            if(state.isBlock('if-false')) {
                 state.setSkipClosingTag(tagname);
                 return;
             }
 
-            if(state.isInsideFragment()) {
+            if(state.isBlock('inside-fragment')) {
                 state.setOutput(Core.createTag(tagname, attribs, selfClosing));
                 return;
             }
@@ -40,42 +40,29 @@ var parxer = function(config, input, next) {
 
         },
         onprocessinginstruction: function(name, data) {
-            if(state.isSkipBlock()) { return; }
+            if(state.isBlock('if-false')) { return; }
             state.setOutput('<' + data + '>');
         },
         ontext:function(data) {
-            if(state.isSkipBlock()) { return; }
+            if(state.isBlock('if-false')) { return; }
             state.setOutput(data);
         },
         oncomment: function(data) {
-            if(state.isSkipBlock()) { return; }
+            if(state.isBlock('if-false')) { return; }
             state.setOutput('<!--' + data);
         },
         oncommentend: function() {
-            if(state.isSkipBlock()) { return; }
+            if(state.isBlock('if-false')) { return; }
             state.setOutput('-->');
         },
         onclosetag: function(tagname) {
 
             var writeEndTag = true;
-
-            if(state.isSkipClosingTag(tagname)) {
-                state.clearSkipClosingTag(tagname);
+            if(state.isBlockCloseTag('if-false', tagname) || state.isSkipClosingTag(tagname)) {
                 writeEndTag = false;
             }
 
-            if(state.isFragmentCloseTag(tagname)) {
-                state.clearInsideFragment(tagname);
-            }
-
-            if(state.isIfBlockCloseTag(tagname)) {
-                state.clearInsideIfBlock(tagname);
-            }
-
-            if(state.isSkipBlockCloseTag(tagname)) {
-                state.clearSkipBlock(tagname);
-            }
-
+            state.clearBlocksForClosingTag(tagname);
             state.decrementTagCounter();
 
             if(writeEndTag) {
