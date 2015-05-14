@@ -78,7 +78,7 @@ describe("If logic plugin", function() {
       parxer({
         plugins: [
           require('../Plugins').If,
-          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
           url: 'http://base.url.com/'
