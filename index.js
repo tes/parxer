@@ -62,6 +62,7 @@ var parxer = function(config, input, next) {
                 writeEndTag = false;
             }
 
+            state.clearSkipClosingTag(tagname);
             state.clearBlocksForClosingTag(tagname);
             state.decrementTagCounter();
 

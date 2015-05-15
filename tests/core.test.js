@@ -56,14 +56,6 @@ describe("Core html parsing", function() {
       });
   });
 
-  it('should deal with all the usual html features', function(done) {
-      var input = '<!DOCTYPE html><html><!-- hello --><div class="class">I am some text<span>I am a span</span><p>Paragraph<br/><br/></p><p>Paragraph</p></div></html>';
-      parxer({}, input, function(err, data) {
-        expect(data).to.be(input);
-        done();
-      });
-  });
-
 });
 
 

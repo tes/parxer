@@ -94,6 +94,25 @@ describe("Bundle parsing", function() {
       });
   });
 
-});
+  it('should correctly close script tags following tes/compoxure#37', function(done) {
+      var input = "<html><div id='bundle'><script cx-replace-outer='true' cx-bundles='service-name/top.js'></script><script id='follower'>Following script</script></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/YOU_SPECIFIED_A_BUNDLE_THAT_ISNT_AVAILABLE_TO_THIS_PAGE/html/top.js.htmlFollowing script');
+        done();
+      });
+  });
 
+});
 
