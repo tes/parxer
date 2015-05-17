@@ -8,6 +8,25 @@ var fs = require('fs');
 
 describe("Image parsing", function() {
 
+  it('should not parse an image or break if no cdn is provided', function(done) {
+      var input = "<html><img id='bundle' cx-src='service-name/image.png'></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Image(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: null,
+        environment: 'test',
+        variables: {
+          'static:service-name|image|png':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle')[0].attribs.src).not.to.be('http://base.url.com/service-name/50/img/image.png');
+        done();
+      });
+  });
+
   it('should parse image attributes and set its src', function(done) {
       var input = "<html><img id='bundle' cx-src='service-name/image.png'></html>";
       parxer({
