@@ -1,5 +1,9 @@
 language: node_js
 node_js:
-  - "1.5"
-  - "0.12"
-  - "0.10"
+- '1.5'
+- '0.12'
+- '0.10'
+notifications:
+  hipchat:
+    rooms:
+      secure: Z6AT4CO/YsLbnpzLGsedNgyNu4shjWGIUXBM3wSiIk0InfrNRjnUeawSQ/7xHLkEqIIQGKpmDlZsU9lb4hNANYSzifcZK9uvXFB0jNepHaOUqAakUihpZmC7e6+B6Jz78cKPV6GfaOmlCdrxuIyxAXcZAO5autR4ZlKBAyGMAhQ=
