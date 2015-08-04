@@ -1,6 +1,6 @@
 {
   "name": "parxer",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "description": "HTML transformation library built on top of HTMLParser2, used by Compoxure.",
   "main": "index.js",
   "scripts": {
