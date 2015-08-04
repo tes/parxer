@@ -114,5 +114,26 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and allow specification of specific bundle versions', function(done) {
+      var input = "<html><div id='bundle' cx-bundles='service-name/top.js@123'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/123/html/top.js.html');
+        done();
+      });
+  });
+
 });
 
