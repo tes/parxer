@@ -17,7 +17,7 @@ describe("Image parsing", function() {
         cdn: null,
         environment: 'test',
         variables: {
-          'static:service-name|image|png':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, data) {
@@ -38,7 +38,7 @@ describe("Image parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|image|png':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, data) {
