@@ -201,6 +201,21 @@ describe("Url parsing", function() {
       });
   });
 
+  it('should return stats about the fragments in the page', function(done) {
+      var input = "<html><div id='url' cx-url='{{server:name}}'>I am some default text</div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']) })
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        expect(err.statistics.fragments['http://www.google.com'].attribs.id).to.be('url');
+        done();
+      });
+  });
+
 
 });
 

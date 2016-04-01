@@ -135,5 +135,25 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should return stastitcs that allow you to understand what bundles are being used', function(done) {
+      var input = "<html><div id='bundle' cx-bundles='service-name/top.js@123'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        expect(err.statistics.bundles['service-name|top'].service).to.be('service-name');
+        done();
+      });
+  });
+
 });
 

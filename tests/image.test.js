@@ -48,6 +48,26 @@ describe("Image parsing", function() {
       });
   });
 
+  it('should return statistics about images', function(done) {
+      var input = "<html><img id='bundle' cx-src='service-name/image.png'></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Image(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        expect(err.statistics.images['service-name/image.png'].src).to.be('http://base.url.com/service-name/50/img/image.png');
+        done();
+      });
+  });
+
 });
 
 
