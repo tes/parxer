@@ -155,5 +155,26 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundles with .', function(done) {
+      var input = "<html><div id='bundle' cx-bundles='service-name/top2.0.js'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top2.0':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top2.0.js.html');
+        done();
+      });
+  });
+
 });
 
