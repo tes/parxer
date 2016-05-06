@@ -20,7 +20,7 @@ describe("Image parsing", function() {
           'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle')[0].attribs.src).not.to.be('http://base.url.com/service-name/50/img/image.png');
         done();
@@ -41,7 +41,7 @@ describe("Image parsing", function() {
           'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle')[0].attribs.src).to.be('http://base.url.com/service-name/50/img/image.png');
         done();
@@ -62,12 +62,10 @@ describe("Image parsing", function() {
           'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         expect(err.statistics.images['service-name/image.png'].src).to.be('http://base.url.com/service-name/50/img/image.png');
         done();
       });
   });
 
 });
-
-

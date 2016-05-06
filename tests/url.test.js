@@ -17,7 +17,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
         done();
@@ -33,7 +33,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
         done();
@@ -51,7 +51,7 @@ describe("Url parsing", function() {
           'server:name':'http://www.google.com',
           'environment:name':'test'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
         expect($('#test').text()).to.be('test');
@@ -69,7 +69,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
         done();
@@ -86,7 +86,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         expect(err.statusCode).to.be(500);
         expect(err.content).to.contain('Timeout exceeded, failed to respond');
         done();
@@ -104,7 +104,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('Arrghh');
         done();
@@ -120,7 +120,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('http://www.google.com');
         done();
@@ -138,7 +138,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url').text()).to.be('Default ContentMore content');
         done();
@@ -156,7 +156,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#url h1').text()).to.be('HTML');
         expect($('#url div').text()).to.be('Hello');
@@ -175,7 +175,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#wrapper h1').text()).to.be('HTML');
         expect($('#wrapper div').text()).to.be('Hello');
@@ -194,7 +194,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#wrapper h1').text()).to.be('HTMLHello');
         done();
@@ -210,7 +210,7 @@ describe("Url parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         expect(err.statistics.fragments['http://www.google.com'].attribs.id).to.be('url');
         done();
       });
@@ -218,5 +218,3 @@ describe("Url parsing", function() {
 
 
 });
-
-

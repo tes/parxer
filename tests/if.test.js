@@ -17,7 +17,7 @@ describe("If logic plugin", function() {
       variables: {
         'environment:name':'test',
         'server:name':'http://www.google.com'
-      }}, input, function(err, data) {
+      }}, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#stillhere').text()).to.be('Rah!');
         done();
@@ -33,7 +33,7 @@ describe("If logic plugin", function() {
       variables: {
         'environment:name':'test',
         'server:name':'http://www.google.com'
-      }}, input, function(err, data) {
+      }}, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('div').text()).to.be('');
         done();
@@ -50,7 +50,7 @@ describe("If logic plugin", function() {
       variables: {
         'environment:name':'test',
         'server:name':'http://www.google.com'
-      }}, input, function(err, data) {
+      }}, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('div').text()).to.be('');
         done();
@@ -66,7 +66,7 @@ describe("If logic plugin", function() {
         ],
       variables: {
         'server:name':'http://www.google.com'
-      }}, input, function(err, data) {
+      }}, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#if').text()).to.be('http://www.google.com');
         done();
@@ -88,7 +88,7 @@ describe("If logic plugin", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top.js.html');
         done();
@@ -96,5 +96,3 @@ describe("If logic plugin", function() {
   });
 
 });
-
-

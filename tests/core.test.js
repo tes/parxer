@@ -10,7 +10,7 @@ describe("Core html parsing", function() {
 
   it('should parse a valid html document unchanged', function(done) {
       var input = "<html></html>";
-      parxer({}, input, function(err, data) {
+      parxer({}, input, function(err, fragmentCount, data) {
         expect(data).to.be(input);
         done();
       });
@@ -19,7 +19,7 @@ describe("Core html parsing", function() {
   it('should correct badly enclosed tags in a complex html document', function(done) {
       var input = "<html><div/><span><span><form></html>";
       var correctOutput = "<html><div><span><span><form></form></span></span></div></html>";
-      parxer({}, input, function(err, data) {
+      parxer({}, input, function(err, fragmentCount, data) {
         expect(data).to.be(correctOutput);
         done();
       });
@@ -33,7 +33,7 @@ describe("Core html parsing", function() {
         ],
       variables: {
         'environment:name':'test'
-      }}, input, function(err, data) {
+      }}, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#test').text()).to.be('test');
         done();
@@ -42,7 +42,7 @@ describe("Core html parsing", function() {
 
   it('should leave br tags alone', function(done) {
       var input = '<br/>';
-      parxer({}, input, function(err, data) {
+      parxer({}, input, function(err, fragmentCount, data) {
         expect(data).to.be('<br/>');
         done();
       });
@@ -50,12 +50,10 @@ describe("Core html parsing", function() {
 
   it('should close void tags to be consistent', function(done) {
       var input = '<br><meta title="hello">';
-      parxer({}, input, function(err, data) {
+      parxer({}, input, function(err, fragmentCount, data) {
         expect(data).to.be('<br/><meta title="hello"/>');
         done();
       });
   });
 
 });
-
-

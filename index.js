@@ -75,7 +75,9 @@ var parxer = function(config, input, next) {
              state.waitFor(config, true, function(err) {
                 if(err) { return next(err); }
                 Core.processDeferredStack(config, state, function() {
-                    state.waitFor(config, false, next);
+                    state.waitFor(config, false, function (err, content) {
+                      return next(err, state._raw().fragmentIndex, content);
+                    });
                 });
              });
         },
@@ -90,4 +92,3 @@ module.exports = {
     parxer: parxer,
     render: Core.render
 };
-
