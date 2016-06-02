@@ -46,4 +46,23 @@ describe("Content loading from CMS", function() {
       });
   });
 
+  it('should replace outer if specified', function(done) {
+      var input = "<html><div id='content' cx-content='tag'></div><div id='outer'><div cx-content-item='{{cms:hello}}' cx-replace-outer='true'>default</div></div></html>";
+      var variables = {};
+      parxer({
+        plugins: [
+          require('../Plugins').ContentItem,
+          require('../Plugins').Content(function(fragment, next) {
+            variables['cms:hello'] = '<strong>hello</strong>';
+            next(null);
+          })
+        ],
+        variables: variables
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#outer').text()).to.be('<strong>hello</strong>');
+        done();
+      });
+  });
+
 });
