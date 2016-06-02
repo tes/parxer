@@ -22,7 +22,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top.js.html');
         done();
@@ -44,7 +44,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
         done();
@@ -66,7 +66,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('html link')[0].attribs.href).to.be('http://base.url.com/service-name/50/css/top.css');
         done();
@@ -86,7 +86,7 @@ describe("Bundle parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/YOU_SPECIFIED_A_BUNDLE_THAT_ISNT_AVAILABLE_TO_THIS_PAGE/html/top.js.html');
         expect($('#default').length).to.be(0);
@@ -107,7 +107,7 @@ describe("Bundle parsing", function() {
         variables: {
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/YOU_SPECIFIED_A_BUNDLE_THAT_ISNT_AVAILABLE_TO_THIS_PAGE/html/top.js.htmlFollowing script');
         done();
@@ -128,7 +128,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/123/html/top.js.html');
         done();
@@ -149,7 +149,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         expect(err.statistics.bundles['service-name|top'].service).to.be('service-name');
         done();
       });
@@ -169,7 +169,7 @@ describe("Bundle parsing", function() {
           'static:service-name|top.2.0':'50',
           'server:name':'http://www.google.com'
         }
-      }, input, function(err, data) {
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top.2.0.js.html');
         done();
@@ -177,4 +177,3 @@ describe("Bundle parsing", function() {
   });
 
 });
-
