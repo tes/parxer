@@ -8,6 +8,7 @@ var parxer = function(config, input, next) {
 
     // Defaults
     config.prefix = config.prefix || 'cx-';
+    config.rawSuffix = config.rawSuffix || '-raw';
 
     var state = State.create(config);
 
