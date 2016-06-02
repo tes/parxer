@@ -8,6 +8,7 @@ var parxer = function(config, input, next) {
 
     // Defaults
     config.prefix = config.prefix || 'cx-';
+    config.rawSuffix = config.rawSuffix || '-raw';
 
     var state = State.create(config);
 
@@ -72,6 +73,7 @@ var parxer = function(config, input, next) {
 
         },
         onend: function() {
+
              state.waitFor(config, true, function(err) {
                 if(err) { return next(err); }
                 Core.processDeferredStack(config, state, function() {

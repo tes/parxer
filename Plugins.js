@@ -3,5 +3,8 @@ module.exports = {
     Test: require('./lib/plugins/test'),
     If: require('./lib/plugins/if'),
     Bundle: require('./lib/plugins/bundle'),
-    Image: require('./lib/plugins/image')
+    Image: require('./lib/plugins/image'),
+    Content: require('./lib/plugins/content'),
+    ContentItem: require('./lib/plugins/content-item'),
+    Direct: require('./lib/plugins/direct')
 };
