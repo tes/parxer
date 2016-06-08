@@ -9,13 +9,13 @@ var fs = require('fs');
 describe("Content loading from CMS", function() {
 
   it('should parse content and then allow cx-content-items to be inserted attribute', function(done) {
-    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{cms:hello}}'>default</div></html>";
+    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{content:tag:hello}}'>default</div></html>";
     var variables = {};
     parxer({
       plugins: [
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
-          variables['cms:hello'] = 'hello';
+          variables['content:tag:hello'] = 'hello';
           next(null);
         })
       ],
@@ -28,7 +28,7 @@ describe("Content loading from CMS", function() {
   });
 
   it('should retain default if content not found and errors not shown', function(done) {
-    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{cms:hello}}'>default</div></html>";
+    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{content:tag:hello}}'>default</div></html>";
     var variables = {};
     parxer({
       showErrors: false,
@@ -47,8 +47,27 @@ describe("Content loading from CMS", function() {
     });
   });
 
+  it('should retain default if content context not in page even if errors are shown', function(done) {
+    var input = "<html><div id='item' cx-content-item='{{content:tag:hello}}'>default</div></html>";
+    var variables = {};
+    parxer({
+      showErrors: true,
+      plugins: [
+        require('../Plugins').ContentItem,
+        require('../Plugins').Content(function(fragment, next) {
+          next(null);
+        })
+      ],
+      variables: variables
+    }, input, function(err, fragmentCount, data) {
+      var $ = cheerio.load(data);
+      expect($('#item').text()).to.be('default');
+      done();
+    });
+  });
+
   it('should display errors if content not found and showing errors', function(done) {
-    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{cms:not-found}}'>default</div></html>";
+    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{content:tag:not-found}}'>default</div></html>";
     var variables = {};
     parxer({
       showErrors: true,
@@ -68,13 +87,13 @@ describe("Content loading from CMS", function() {
   });
 
   it('should replace outer if specified', function(done) {
-    var input = "<html><div id='content' cx-content='tag'></div><div id='outer'><div cx-content-item='{{cms:hello}}' cx-replace-outer='true'>default</div></div></html>";
+    var input = "<html><div id='content' cx-content='tag'></div><div id='outer'><div cx-content-item='{{content:tag:hello}}' cx-replace-outer='true'>default</div></div></html>";
     var variables = {};
     parxer({
       plugins: [
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
-          variables['cms:hello'] = '<strong>hello</strong>';
+          variables['content:tag:hello'] = '<strong>hello</strong>';
           next(null);
         })
       ],
