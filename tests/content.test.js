@@ -16,7 +16,7 @@ describe("Content loading from CMS", function() {
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
           variables['content:tag:hello'] = 'hello';
-          next(null);
+          next(null, '<!-- loaded -->');
         })
       ],
       variables: variables
@@ -35,7 +35,7 @@ describe("Content loading from CMS", function() {
       plugins: [
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
-          next(null);
+          next(null, '<!-- loaded -->');
         })
       ],
       variables: variables
@@ -55,7 +55,7 @@ describe("Content loading from CMS", function() {
       plugins: [
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
-          next(null);
+          next(null, '<!-- loaded -->');
         })
       ],
       variables: variables
@@ -74,13 +74,33 @@ describe("Content loading from CMS", function() {
       plugins: [
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
-          next(null);
+          next(null, '<!-- loaded -->');
         })
       ],
       variables: variables
     }, input, function(err, fragmentCount, data) {
       var $ = cheerio.load(data);
       expect($('#item').text()).to.contain('Content not found for');
+      expect(err.fragmentErrors.length).to.be(1);
+      done();
+    });
+  });
+
+  it('should display errors if content request fails and showing errors', function(done) {
+    var input = "<html><div id='content' cx-content='tag'></div><div id='item' cx-content-item='{{content:tag:not-found}}'>default</div></html>";
+    var variables = {};
+    parxer({
+      showErrors: true,
+      plugins: [
+        require('../Plugins').ContentItem,
+        require('../Plugins').Content(function(fragment, next) {
+          next('Unable to load content');
+        })
+      ],
+      variables: variables
+    }, input, function(err, fragmentCount, data) {
+      var $ = cheerio.load(data);
+      expect($('#content').text()).to.contain('Unable to load content');
       expect(err.fragmentErrors.length).to.be(1);
       done();
     });
@@ -94,7 +114,7 @@ describe("Content loading from CMS", function() {
         require('../Plugins').ContentItem,
         require('../Plugins').Content(function(fragment, next) {
           variables['content:tag:hello'] = '<strong>hello</strong>';
-          next(null);
+          next(null, '<!-- loaded -->');
         })
       ],
       variables: variables
