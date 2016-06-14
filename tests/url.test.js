@@ -79,7 +79,7 @@ describe("Url parsing", function() {
   it('should deal with managing overall timeout', function(done) {
       var input = "<html><div id='url' cx-url='{{server:name}}'></div></html>";
       parxer({
-        timeout: 20,
+        parserTimeout: 20,
         plugins: [
           require('../Plugins').Url(function(fragment, next) { setTimeout(function() { next(null, fragment.attribs['cx-url']) }, 40); })
         ],
