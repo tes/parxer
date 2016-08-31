@@ -176,4 +176,26 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and use a cdn resolver if provided', function(done) {
+      var input = "<html><div id='bundle' cx-bundles='service-name/top.js'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/',
+          resolver: function(service) { return 'http://resolved.url.com/'; }
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://resolved.url.com/service-name/50/html/top.js.html');
+        done();
+      });
+  });
+
 });
