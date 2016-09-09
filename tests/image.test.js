@@ -68,4 +68,26 @@ describe("Image parsing", function() {
       });
   });
 
+  it('should parse image attributes and honor cdn resolver', function(done) {
+      var input = "<html><img id='bundle' cx-src='service-name/image.png'></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Image(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/',
+          resolver: function(service) { return 'http://resolved.url.com/'; }
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle')[0].attribs.src).to.be('http://resolved.url.com/service-name/50/img/image.png');
+        done();
+      });
+  });
+
 });
