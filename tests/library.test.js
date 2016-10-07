@@ -24,7 +24,7 @@ describe("Library parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/lib/bootstrap-3.0/bootstrap-3.0.js');
+        expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
         done();
       });
   });
@@ -45,7 +45,7 @@ describe("Library parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#library link').attr('href')).to.be('http://base.url.com/vendor/lib/bootstrap-3.0/bootstrap-3.0.css');
+        expect($('#library link').attr('href')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.css');
         done();
       });
   });
