@@ -24,7 +24,6 @@ describe("Library parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        console.dir(data);
         expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/lib/bootstrap-3.0/bootstrap-3.0.js');
         done();
       });
