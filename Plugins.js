@@ -6,5 +6,6 @@ module.exports = {
     Image: require('./lib/plugins/image'),
     Content: require('./lib/plugins/content'),
     ContentItem: require('./lib/plugins/content-item'),
-    Direct: require('./lib/plugins/direct')
+    Direct: require('./lib/plugins/direct'),
+    Library: require('./lib/plugins/library')
 };
