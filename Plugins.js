@@ -7,5 +7,6 @@ module.exports = {
     Content: require('./lib/plugins/content'),
     ContentItem: require('./lib/plugins/content-item'),
     Direct: require('./lib/plugins/direct'),
+    DefineSlot: require('./lib/plugins/define-slot'),
     Library: require('./lib/plugins/library')
 };
