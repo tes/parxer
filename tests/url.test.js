@@ -127,6 +127,22 @@ describe("Url parsing", function() {
       });
   });
 
+  it('should replace outer when specified with url (with custom tag)', function(done) {
+      var input = "<html><div id='url'><compoxure cx-url='{{server:name}}'>I am some default text</compoxure></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Url(function(fragment, next) { next(null, fragment.attribs['cx-url']) })
+        ],
+        variables: {
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#url').text()).to.be('http://www.google.com');
+        done();
+      });
+  });
+
   it('should deal with a service that returns an error but show default text if configured to', function(done) {
       var input = "<html><div id='url' cx-url='{{server:name}}'><h1>Default Content</h1><span>More content</span></div></html>";
       parxer({

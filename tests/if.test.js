@@ -57,6 +57,22 @@ describe("If logic plugin", function() {
       });
   });
 
+  it('should parse if attributes and allow block if false, removing block if cx-replace-outer (using custom tag)', function(done) {
+      var input = "<html><compoxure id='if' cx-if='{{environment:name}}' cx-if-value='test'><h1>Hello</h1><br/><!-- hello --><span id='stillhere'>Rah!</span></compoxure></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').If
+        ],
+      variables: {
+        'environment:name':'test',
+        'server:name':'http://www.google.com'
+      }}, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('div').text()).to.be('');
+        done();
+      });
+  });
+
   it('should parse if attributes and retain block if true, including url declarations', function(done) {
       var input = "<html><div id='if' cx-if='{{server:name}}' cx-if-value='http://www.google.com'><div cx-url='{{server:name}}'></div></div></html>";
       parxer({

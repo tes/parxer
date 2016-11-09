@@ -4,7 +4,6 @@ var expect = require('expect.js');
 var parxer = require('..').parxer;
 var render = require('..').render;
 var cheerio = require('cheerio');
-var fs = require('fs');
 
 describe("Library parsing", function() {
 

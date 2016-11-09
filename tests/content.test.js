@@ -125,4 +125,22 @@ describe("Content loading from CMS", function() {
     });
   });
 
+  it('should replace outer if specified (with custom tag)', function(done) {
+    var input = "<html><div id='content' cx-content='tag'></div><div id='outer'><compoxure cx-content-item='{{content:tag:hello}}'>default</compoxure></div></html>";
+    var variables = {};
+    parxer({
+      plugins: [
+        require('../Plugins').ContentItem,
+        require('../Plugins').Content(function(fragment, next) {
+          variables['content:tag:hello'] = '<strong>hello</strong>';
+          next(null, '<!-- loaded -->');
+        })
+      ],
+      variables: variables
+    }, input, function(err, fragmentCount, data) {
+      var $ = cheerio.load(data);
+      expect($('#outer').text()).to.be('<strong>hello</strong>');
+      done();
+    });
+  });
 });
