@@ -73,6 +73,28 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and inline css urls if in minfied mode with cx-inline', function(done) {
+      var input = "<html><style id='bundle' cx-inline cx-bundles='service-name/top.css'></style></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: true,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/css/top.css');
+        done();
+      });
+  });
+
   it('should replace outer when specified with bundle', function(done) {
       var input = "<html><div id='bundle'><div cx-replace-outer='true' cx-bundles='service-name/top.js'><script id='default'>This is some default script</script></div></div></html>";
       parxer({
