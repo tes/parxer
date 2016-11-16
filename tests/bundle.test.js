@@ -29,7 +29,7 @@ describe("Bundle parsing", function() {
       });
   });
 
-  it('should parse bundle attributes and use direct js urls if in minfied mode', function(done) {
+  it('should parse bundle attributes and use direct js urls if in minified mode', function(done) {
       var input = "<html><div id='bundle' cx-replace-outer='true' cx-bundles='service-name/top.js'></div></html>";
       parxer({
         plugins: [
@@ -47,6 +47,30 @@ describe("Bundle parsing", function() {
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
+        done();
+      });
+  });
+
+  it('should parse bundle attributes and use direct js urls if in minified mode (add link)', function(done) {
+      var input = "<html><div id='bundle' cx-replace-outer='true' cx-server-push cx-bundles='service-name/top.js'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: true,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data, additionalHeaders) {
+        console.log(additionalHeaders)
+        var $ = cheerio.load(data);
+        expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
+        expect(additionalHeaders.link).to.be('<http://base.url.com/service-name/50/js/top.js>; rel=preload');
         done();
       });
   });

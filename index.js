@@ -78,7 +78,8 @@ var parxer = function(config, input, next) {
                 if(err) { return next(err); }
                 Core.processDeferredStack(config, state, function() {
                     state.waitFor(config, false, function (err, content) {
-                      return next(err, state._raw().fragmentIndex, content);
+                      var clonedState = state._raw();
+                      return next(err, clonedState.fragmentIndex, content, clonedState.additionalHeaders);
                     });
                 });
              });
