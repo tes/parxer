@@ -52,7 +52,7 @@ describe("Define slot parsing", function() {
   });
 
   it('should parse define slot attributes and insert the content (replace outer implicitly with compoxure tag)', function(done) {
-      var input = "<html><div id='library'><compoxure cx-define-slot='hello'></compoxure></div></html>";
+      var input = "<html><div id='library'><compoxure cx-define-slot='hello'>xxx</compoxure></div></html>";
       parxer({
         plugins: [
           require('../Plugins').DefineSlot(function(fragment, next) { next(null, fragment.attribs['cx-define-slot']) })
