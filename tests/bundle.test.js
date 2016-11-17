@@ -67,7 +67,6 @@ describe("Bundle parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data, additionalHeaders) {
-        console.log(additionalHeaders)
         var $ = cheerio.load(data);
         expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
         expect(additionalHeaders.link).to.be('<http://base.url.com/service-name/50/js/top.js>; rel=preload');
@@ -93,6 +92,7 @@ describe("Bundle parsing", function() {
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('html link')[0].attribs.href).to.be('http://base.url.com/service-name/50/css/top.css');
+        expect($('html link')[0].attribs.rel).to.be('stylesheet');
         done();
       });
   });
@@ -255,7 +255,6 @@ describe("Bundle parsing", function() {
           url: ' http://base.url.com/',
           resolver: function(service) {
             if (service === 'service-name') {
-              console.log('returning')
               return 'http://resolved.url.com/';
             }
           }

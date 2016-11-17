@@ -11,7 +11,7 @@ describe("Library parsing", function() {
       var input = "<html><div id='library'><script async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
       parxer({
         plugins: [
-          require('../Plugins').Library
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
           url: 'http://base.url.com/'
@@ -29,10 +29,10 @@ describe("Library parsing", function() {
   });
 
   it('should parse library attributes and re-render href for css scripts', function(done) {
-      var input = "<html><div id='library'><link cx-library='bootstrap-3.0/bootstrap-3.0.css' media='all' rel='stylesheet'/></div></html>";
+      var input = "<html><div id='library'><link cx-library='bootstrap-3.0/bootstrap-3.0.css' media='print' rel='stylesheet'/></div></html>";
       parxer({
         plugins: [
-          require('../Plugins').Library
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
           url: 'http://base.url.com/'
@@ -45,16 +45,17 @@ describe("Library parsing", function() {
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
         expect($('#library link').attr('href')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.css');
+        expect($('#library link').attr('media')).to.be('print');
+        expect($('#library link').attr('rel')).to.be('stylesheet');
         done();
       });
   });
 
-
-  it('wont parse css if not link', function(done) {
-      var input = "<html><div id='library'><div cx-library='bootstrap-3.0/bootstrap-3.0.css'></div></div></html>";
+  it('should parse multiple libraries and pass on the attributes from the input tag', function(done) {
+      var input = "<html><div id='library'><script async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js,tes-1.0/tes-1.0.js'></script></div></html>";
       parxer({
         plugins: [
-          require('../Plugins').Library
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
           url: 'http://base.url.com/'
@@ -66,16 +67,16 @@ describe("Library parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#library div').attr('href')).to.be(undefined);
+        expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
         done();
       });
   });
 
-  it('wont parse js if not script', function(done) {
-      var input = "<html><div id='library'><div cx-library='bootstrap-3.0/bootstrap-3.0.js'></div></div></html>";
+  it('can inline libraries if requested via cx-inline', function(done) {
+      var input = "<html><style id='library' cx-library='bootstrap-3.0/bootstrap-3.0.css,tes-1.0/tes-1.0.css' cx-inline></style></html>";
       parxer({
         plugins: [
-          require('../Plugins').Library
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
           url: 'http://base.url.com/'
@@ -87,7 +88,7 @@ describe("Library parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#library div').attr('src')).to.be(undefined);
+        expect($('#library').text()).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.csshttp://base.url.com/vendor/library/tes-1.0/tes-1.0.css');
         done();
       });
   });
