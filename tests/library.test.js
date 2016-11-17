@@ -93,4 +93,26 @@ describe("Library parsing", function() {
       });
   });
 
+  it('should append server push headers if asked to', function(done) {
+      var input = "<html><div id='library'><script cx-server-push async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data, additionalHeaders) {
+        var $ = cheerio.load(data);
+        expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
+        expect(additionalHeaders.link).to.be('<http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js>; rel=preload');
+        done();
+      });
+  });
+
 });
