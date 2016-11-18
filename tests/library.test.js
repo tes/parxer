@@ -93,6 +93,27 @@ describe("Library parsing", function() {
       });
   });
 
+  it('can inline libraries if requested via cx-inline and replace variables', function(done) {
+      var input = "<html><style id='library' cx-library='bootstrap-3.0/bootstrap-3.0.css' cx-inline></style></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, 'this is the text {{server:name}}'); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#library').text()).to.be('this is the text http://www.google.com');
+        done();
+      });
+  });
+
   it('should append server push headers if asked to', function(done) {
       var input = "<html><div id='library'><script cx-server-push async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
       parxer({
