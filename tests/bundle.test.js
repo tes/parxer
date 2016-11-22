@@ -142,6 +142,28 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and inline css urls if not in minfied mode with both cx-inline and cx-replace-outer', function(done) {
+      var input = "<html><div id='bundle'><style cx-replace-outer cx-inline cx-bundles='service-name/top.css'></style></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: false,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/css/top.css');
+        done();
+      });
+  });
+
   it('should replace variables with cx-inline', function(done) {
       var input = "<html><style id='bundle' cx-inline cx-bundles='service-name/top.css'></style></html>";
       parxer({
