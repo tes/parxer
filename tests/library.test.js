@@ -157,4 +157,47 @@ describe("Library parsing", function() {
       });
   });
 
+  it('should remove duplicates', function(done) {
+      var input = "<html><div id='library'><script cx-replace-outer async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script><script cx-replace-outer async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
+        expect($('#library script').length).to.be(1);
+        done();
+      });
+  });
+
+  it('should remove duplicates (2)', function(done) {
+      var input = "<html><compoxure cx-library='bootstrap-3.0/bootstrap-3.0.css'></compoxure><compoxure cx-library='bootstrap-3.0/bootstrap-3.0.css,tes-1.0/tes-1.0.css'></compoxure></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('link[href="http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.css"]').length).to.be(1);
+        expect($('link[href="http://base.url.com/vendor/library/tes-1.0/tes-1.0.css"]').length).to.be(1);
+        done();
+      });
+  });
 });
