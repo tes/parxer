@@ -316,4 +316,26 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should remove duplicates', function(done) {
+      var input = "<html><div class='bundle' cx-bundles='service-name/top.js'></div><div id='bundle' cx-bundles='service-name/top.js'></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('.bundle').length).to.be(1);
+        expect($('.bundle').text()).to.be('http://base.url.com/service-name/50/html/top.js.html');
+        done();
+      });
+  });
+
 });
