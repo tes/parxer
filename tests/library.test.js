@@ -152,7 +152,7 @@ describe("Library parsing", function() {
       }, input, function(err, fragmentCount, data, additionalHeaders) {
         var $ = cheerio.load(data);
         expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
-        expect(additionalHeaders.link).to.be('<http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js>; rel=preload');
+        expect(additionalHeaders.link).to.be('<http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js>; rel=preload; as=script');
         done();
       });
   });
