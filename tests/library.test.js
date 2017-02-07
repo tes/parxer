@@ -51,6 +51,48 @@ describe("Library parsing", function() {
       });
   });
 
+  it('should parse library attributes and re-render src for js scripts (client hint)', function(done) {
+      var input = "<html><div id='library'><script cx-replace-outer cx-client-hint async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#library').html()).to.be('<link rel="preload" as="script" href="http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js">');
+        done();
+      });
+  });
+
+  it('should parse library attributes and re-render href for css scripts (client hint)', function(done) {
+      var input = "<html><div id='library'><link cx-replace-outer cx-client-hint cx-library='bootstrap-3.0/bootstrap-3.0.css'/></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#library').html()).to.be('<link rel="preload" as="style" href="http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.css">');
+        done();
+      });
+  });
+
   it('should parse multiple libraries and pass on the attributes from the input tag', function(done) {
       var input = "<html><div id='library'><script cx-replace-outer async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js,tes-1.0/tes-1.0.js'></script></div></html>";
       parxer({

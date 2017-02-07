@@ -51,6 +51,28 @@ describe("Bundle parsing", function() {
       });
   });
 
+  it('should parse bundle attributes and use client-hint urls if in minified mode', function(done) {
+      var input = "<html><link id='bundle' cx-replace-outer='true' rel='preload' cx-client-hint cx-bundles='service-name/top.js' /></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        minified: true,
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('html').html()).to.be('<link rel="preload" as="script" href="http://base.url.com/service-name/50/js/top.js">');
+        done();
+      });
+  });
+
   it('should parse bundle attributes and use direct js urls if in minified mode (add link)', function(done) {
       var input = "<html><div id='bundle' cx-replace-outer='true' cx-server-push cx-bundles='service-name/top.js'></div></html>";
       parxer({
