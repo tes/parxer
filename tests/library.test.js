@@ -179,6 +179,7 @@ describe("Library parsing", function() {
 
   it('should append server push headers if asked to', function(done) {
       var input = "<html><div id='library'><script cx-replace-outer cx-server-push async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
+      var commonState = {};
       parxer({
         plugins: [
           require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
@@ -190,9 +191,11 @@ describe("Library parsing", function() {
         variables: {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
-        }
-      }, input, function(err, fragmentCount, data, additionalHeaders) {
+        },
+        commonState: commonState
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
+        var additionalHeaders = commonState.additionalHeaders;
         expect($('#library script').attr('src')).to.be('http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js');
         expect(additionalHeaders.link).to.be('<http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.js>; rel=preload; as=script');
         done();

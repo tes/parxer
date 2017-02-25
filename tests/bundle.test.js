@@ -75,6 +75,7 @@ describe("Bundle parsing", function() {
 
   it('should parse bundle attributes and use direct js urls if in minified mode (add link)', function(done) {
       var input = "<html><div id='bundle' cx-replace-outer='true' cx-server-push cx-bundles='service-name/top.js'></div></html>";
+      var commonState = {};
       parxer({
         plugins: [
           require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
@@ -87,9 +88,11 @@ describe("Bundle parsing", function() {
         variables: {
           'static:service-name|top':'50',
           'server:name':'http://www.google.com'
-        }
-      }, input, function(err, fragmentCount, data, additionalHeaders) {
+        },
+        commonState: commonState
+      }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
+        var additionalHeaders = commonState.additionalHeaders;
         expect($('html script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
         expect(additionalHeaders.link).to.be('<http://base.url.com/service-name/50/js/top.js>; rel=preload; as=script');
         done();
