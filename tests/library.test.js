@@ -245,4 +245,31 @@ describe("Library parsing", function() {
         done();
       });
   });
+
+  it('should remove duplicates, using commonState', function(done) {
+      var input = "<html><compoxure cx-library='bootstrap-3.0/bootstrap-3.0.css,tes-1.0/tes-1.0.css'></compoxure></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        },
+        commonState: {
+          alreadyImported: {
+            'library:bootstrap-3.0/bootstrap-3.0.css': true
+          }
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('link[href="http://base.url.com/vendor/library/bootstrap-3.0/bootstrap-3.0.css"]').length).to.be(0);
+        expect($('link[href="http://base.url.com/vendor/library/tes-1.0/tes-1.0.css"]').length).to.be(1);
+        done();
+      });
+  });
 });
