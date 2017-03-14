@@ -51,6 +51,30 @@ describe("Library parsing", function() {
       });
   });
 
+  it('should parse library attributes and re-render href for css scripts (relative URL)', function(done) {
+      var input = "<html><div id='library'><link cx-replace-outer cx-library='bootstrap-3.0/bootstrap-3.0.css' media='print' rel='stylesheet'/></div></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Library(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        baseURL: 'http://base.url.com',
+        environment: 'test',
+        variables: {
+          'static:service-name|top':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#library link').attr('href')).to.be('/vendor/library/bootstrap-3.0/bootstrap-3.0.css');
+        expect($('#library link').attr('media')).to.be('print');
+        expect($('#library link').attr('rel')).to.be('stylesheet');
+        done();
+      });
+  });
+
   it('should parse library attributes and re-render src for js scripts (client hint)', function(done) {
       var input = "<html><div id='library'><script cx-replace-outer cx-client-hint async='true' cx-library='bootstrap-3.0/bootstrap-3.0.js'></script></div></html>";
       parxer({

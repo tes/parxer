@@ -69,6 +69,28 @@ describe("Image parsing", function() {
       });
   });
 
+  it('should generate client hint (relative url)', function(done) {
+      var input = "<html id='bundle'><img cx-src='service-name/image.png' cx-client-hint></html>";
+      parxer({
+        plugins: [
+          require('../Plugins').Image(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
+        ],
+        cdn: {
+          url: 'http://base.url.com/'
+        },
+        environment: 'test',
+        baseURL: 'http://base.url.com',
+        variables: {
+          'static:service-name':'50',
+          'server:name':'http://www.google.com'
+        }
+      }, input, function(err, fragmentCount, data) {
+        var $ = cheerio.load(data);
+        expect($('#bundle').html()).to.be('<link rel="preload" as="image" href="/service-name/50/img/image.png">');
+        done();
+      });
+  });
+
   it('should parse video attributes and set its src', function(done) {
       var input = "<html><video id='bundle' cx-src='service-name/video.mp4'></html>";
       parxer({
