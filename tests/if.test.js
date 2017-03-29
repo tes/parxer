@@ -101,7 +101,7 @@ describe("If logic plugin", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
