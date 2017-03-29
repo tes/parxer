@@ -19,7 +19,7 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -41,7 +41,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -64,7 +64,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -86,7 +86,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -109,7 +109,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         },
         commonState: commonState
@@ -134,7 +134,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -157,7 +157,7 @@ describe("Bundle parsing", function() {
         minified: true,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -180,7 +180,7 @@ describe("Bundle parsing", function() {
         minified: false,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -202,7 +202,7 @@ describe("Bundle parsing", function() {
         minified: false,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -224,7 +224,7 @@ describe("Bundle parsing", function() {
         minified: false,
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -286,7 +286,7 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -307,11 +307,11 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
-        expect(err.statistics.bundles['service-name|top'].service).to.be('service-name');
+        expect(err.statistics.bundles['service-name'].service).to.be('service-name');
         done();
       });
   });
@@ -327,7 +327,7 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top.2.0':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -353,8 +353,8 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
-          'static:service-other-name|bottom':'51',
+          'static:service-name':'50',
+          'static:service-other-name':'51',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -375,7 +375,7 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
@@ -398,7 +398,7 @@ describe("Bundle parsing", function() {
         },
         environment: 'test',
         variables: {
-          'static:service-name|top':'50',
+          'static:service-name':'50',
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
