@@ -88,7 +88,7 @@ describe("Bundle parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('html').html()).to.be('<link rel="preload" as="script" href="http://base.url.com/service-name/50/js/top.js">');
+        expect($('html').html()).to.be('<link rel="preload" as="script" href="http://base.url.com/service-name/50/js/top.js" id="bundle">');
         done();
       });
   });
