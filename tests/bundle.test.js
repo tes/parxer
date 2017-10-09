@@ -286,7 +286,6 @@ describe("Bundle parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
-        console.log(data)
         var $ = cheerio.load(data);
         expect($('#bundle script')[0].attribs.src).to.be('http://resolved.url.com/service-name/50/js/top.js');
         expect($('#bundle script')[1].arrribs.src).to.be('http://base.url.com/service-other-name/51/js/bottom.js');
