@@ -106,7 +106,7 @@ describe("If logic plugin", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#bundle').text()).to.be('http://base.url.com/service-name/50/html/top.js.html');
+        expect($('#bundle script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
         done();
       });
   });
