@@ -265,14 +265,14 @@ describe("Bundle parsing", function() {
       });
   });
 
-  it.skip('should parse bundle attributes and use a cdn resolver if provided and default to url', function(done) {
+  it('should parse bundle attributes and use a cdn resolver if provided and default to url', function(done) {
       var input = "<html><div id='bundle' cx-bundles='service-name/top.js,service-other-name/bottom.js'></div></html>";
       parxer({
         plugins: [
           require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
         ],
         cdn: {
-          url: ' http://base.url.com/',
+          url: 'http://base.url.com/',
           resolver: function(service) {
             if (service === 'service-name') {
               return 'http://resolved.url.com/';
@@ -287,13 +287,15 @@ describe("Bundle parsing", function() {
         }
       }, input, function(err, fragmentCount, data) {
         var $ = cheerio.load(data);
-        expect($('#bundle script')[0].attribs.src).to.be('http://resolved.url.com/service-name/50/js/top.js');
-        expect($('#bundle script')[1].arrribs.src).to.be('http://base.url.com/service-other-name/51/js/bottom.js');
+        var bundleOne = $('#bundle script')['0'].attribs.src;
+        var bundleTwo = $('#bundle script')['1'].attribs.src;
+        expect(bundleOne).to.be('http://resolved.url.com/service-name/50/js/top.js');
+        expect(bundleTwo).to.be('http://base.url.com/service-other-name/51/js/bottom.js');
         done();
       });
   });
 
-  it.skip('should remove duplicates', function(done) {
+  it('should remove duplicates', function(done) {
       var input = "<html><div class='bundle' cx-bundles='service-name/top.js'></div><div id='bundle' cx-bundles='service-name/top.js'></div></html>";
       parxer({
         plugins: [
@@ -311,28 +313,6 @@ describe("Bundle parsing", function() {
         var $ = cheerio.load(data);
         expect($('.bundle').length).to.be(2);
         expect($('.bundle script')[0].attribs.src).to.be('http://base.url.com/service-name/50/js/top.js');
-        done();
-      });
-  });
-
-  it.skip('should remove duplicates', function(done) {
-      var input = "<html><div cx-replace-outer class='bundle' cx-bundles='service-name/top.js'></div><div cx-replace-outer id='bundle' cx-bundles='service-name/top.js'></div></html>";
-      parxer({
-        plugins: [
-          require('../Plugins').Bundle(function(fragment, next) { next(null, fragment.attribs['cx-url']); })
-        ],
-        cdn: {
-          url: 'http://base.url.com/'
-        },
-        environment: 'test',
-        variables: {
-          'static:service-name':'50',
-          'server:name':'http://www.google.com'
-        }
-      }, input, function(err, fragmentCount, data) {
-        var $ = cheerio.load(data);
-        expect($('.bundle').length).to.be(1);
-        expect($('.bundle').attr('src')).to.be('http://base.url.com/service-name/50/js/top.js');
         done();
       });
   });
