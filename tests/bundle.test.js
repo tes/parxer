@@ -239,7 +239,7 @@ describe("Bundle parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
-        expect(err.statistics.bundles['service-name'].service).to.be('service-name');
+        expect(err.statistics.bundles['service-name'][0].service).to.be('service-name');
         done();
       });
   });

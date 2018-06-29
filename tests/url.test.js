@@ -227,7 +227,7 @@ describe("Url parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
-        expect(err.statistics.fragments['http://www.google.com'].attribs.id).to.be('url');
+        expect(err.statistics.fragments['http://www.google.com'][0].attribs.id).to.be('url');
         done();
       });
   });

@@ -148,7 +148,7 @@ describe("Image parsing", function() {
           'server:name':'http://www.google.com'
         }
       }, input, function(err, fragmentCount, data) {
-        expect(err.statistics.images['service-name/image.png'].src).to.be('http://base.url.com/service-name/50/img/image.png');
+        expect(err.statistics.images['service-name/image.png'][0].src).to.be('http://base.url.com/service-name/50/img/image.png');
         done();
       });
   });
