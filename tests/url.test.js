@@ -234,7 +234,7 @@ describe("Url parsing", function () {
 
     describe('cx-strategy', function () {
         it('should parse url attributes and return the first one', function (done) {
-            var input = "<html><div id='url' cx-url='{{server:name}} {{server:name2}}' cx-strategy='first-non-empty'>I am some default text</div></html>";
+            var input = "<html><div id='url' cx-url-1='{{server:name}}' cx-url-2='{{server:name2}}' cx-strategy='first-non-empty'>I am some default text</div></html>";
             parxer({
                 plugins: [
                     require('../Plugins').Url(function (fragment, next) { next(null, fragment.attribs['cx-url']) })
@@ -251,7 +251,7 @@ describe("Url parsing", function () {
         });
 
         it('should parse url attributes and return all of them', function (done) {
-            var input = "<html><div id='url' cx-url='{{server:name}} {{server:name2}}'>I am some default text</div></html>";
+            var input = "<html><div id='url' cx-url-1='{{server:name}}' cx-url-2='{{server:name2}}'>I am some default text</div></html>";
             parxer({
                 plugins: [
                     require('../Plugins').Url(function (fragment, next) { next(null, fragment.attribs['cx-url']) })
@@ -268,7 +268,7 @@ describe("Url parsing", function () {
         });
 
         it('should parse url attributes and return all them (2)', function (done) {
-            var input = "<html><div id='url' cx-url='{{server:name}} {{server:name2}}' cx-strategy='first-non-empty'>I am some default text</div></html>";
+            var input = "<html><div id='url' cx-url-1='{{server:name}}' cx-url-2='{{server:name2}}' cx-strategy='first-non-empty'>I am some default text</div></html>";
             var contents = {
                 'http://www.abc.com': ' ',
                 'http://www.def.com': 'it works!',
@@ -289,7 +289,7 @@ describe("Url parsing", function () {
         });
 
         it('should parse url attributes and return the first non empty (we consider space to be empty)', function (done) {
-            var input = "<html><div id='url' cx-url='{{server:name}} {{server:name2}}'>I am some default text</div></html>";
+            var input = "<html><div id='url' cx-url-1='{{server:name}}' cx-url-2='{{server:name2}}'>I am some default text</div></html>";
             var contents = {
                 'http://www.abc.com': ' ',
                 'http://www.def.com': 'it works!',
